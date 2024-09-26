@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from neural_decoding.decoders.BASE_nonlinear_decoder import NeuralNetwork
+from neural_decoding.decoders.BASE_NN_decoder import NeuralNetwork
 
 class RecurrentModel(nn.Module, NeuralNetwork):
     def __init__(self, input_size, num_outputs, model_params):
