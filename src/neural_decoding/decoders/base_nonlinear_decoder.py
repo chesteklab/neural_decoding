@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.neural_decoding.decoders.BASE_decoder import decoder
+from neural_decoding.decoders.BASE_decoder import decoder
 import torch
 
 class NeuralNetwork(decoder):

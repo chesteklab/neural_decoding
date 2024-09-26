@@ -1,4 +1,4 @@
-from src.neural_decoding.decoders.BASE_decoder import decoder
+from neural_decoding.decoders.BASE_decoder import decoder
 import numpy as np
 import pickle
 import torch
