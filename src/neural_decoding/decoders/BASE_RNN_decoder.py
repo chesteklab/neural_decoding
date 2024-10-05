@@ -51,9 +51,9 @@ class RecurrentNeuralNetwork(NeuralNetwork):
         Trains Recurrent Model. (See BASE_NN for details)
         """
 
-        val_loss, (loss_history_train, loss_history_val) = super().train_model(data_loader, loss_func, optimizer, training_params)
+        val_loss, (loss_history_train, loss_history_val, corr_history) = super().train_model(data_loader, loss_func, optimizer, training_params)
 
-        return val_loss, (loss_history_train, loss_history_val)
+        return val_loss, (loss_history_train, loss_history_val, corr_history)
 
     @abstractmethod
     def forward(self, x):

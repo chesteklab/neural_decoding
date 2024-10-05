@@ -87,9 +87,9 @@ class LSTM(nn.Module, RecurrentNeuralNetwork):
         Trains LSTM Model (see BASE_RNN for details)
         """
 
-        val_loss, (loss_history_train, loss_history_val) = super().train_model(data_loader, criterion, optimizer, training_params)
+        val_loss, (loss_history_train, loss_history_val, corr_history) = super().train_model(data_loader, criterion, optimizer, training_params)
 
-        return val_loss, (loss_history_train, loss_history_val)
+        return val_loss, (loss_history_train, loss_history_val, corr_history)
 
 
     def save_model(self, filepath):
