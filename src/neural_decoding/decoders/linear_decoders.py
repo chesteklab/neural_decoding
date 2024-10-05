@@ -101,8 +101,8 @@ class KalmanFilter(decoder):
         Parameters:
             input_size (int); Not used (but inherits from decoder, so need it. Dummy variable)
             output_size (int): Not used (but inherits from decoder, so need it. Dummy variable)
-            model_params (dict) containing four keys, 'append_ones_y' (bool) which specifies whether or not to add column of ones for bias, 
-            'device' (bool) which specifies what device to train/run the model on, "start_y" (array) which specifies an initial [1, m] state, and "return_tensor" 
+            model_params (dict) containing three keys, 'append_ones_y' (bool) which specifies whether or not to add column of ones for bias, 
+            'device' (bool) which specifies what device to train/run the model on and "return_tensor" 
             (bool) which specifies whether a tensor should be returned or not.
 
             TODO: option to zero position uncertainty
@@ -114,7 +114,6 @@ class KalmanFilter(decoder):
         self.At, self.Ct = None, None
         self.append_ones_y = model_config["append_ones_y"]
         self.device = model_config["device"]
-        self.start_y = model_config["start_y"]
         self.return_tensor = model_config["return_tensor"]
 
     def train(self, x, y):
@@ -157,34 +156,13 @@ class KalmanFilter(decoder):
         yhat = self.predict_numpy(input)
         return yhat
 
-    # def predict(self, x, start_y=None):
-    #     ''' Translated directly from Sam's matlab code kfPredict.m'''
-    #     x = x.view((x.shape[0], -1))
-    #     yhat = torch.zeros((x.shape[0], self.A.shape[1]))
-    #     if start_y:
-    #         yhat[0, :] = start_y
-
-    #     Pt = self.W.clone()
-
-    #     # for t in range(1, yhat.shape[0]):
-    #     for t in tqdm(range(1, yhat.shape[0])):
-    #         yt = yhat[t - 1, :] @ self.At                               # predict new state
-    #         Pt = self.A @ Pt @ self.At + self.W                         # compute error covariance
-    #         K = torch.linalg.lstsq((self.C @ Pt @ self.Ct + self.Q).T,
-    #                                (Pt @ self.Ct).T, rcond=None)[0].T   # compute kalman gain, where B/A = (A'\B')'
-    #         yhat[t, :] = yt.T + K @ (x[t, :].T - self.C @ yt.T)         # update state estimate
-    #         Pt = (torch.eye(Pt.shape[0]) - K @ self.C) @ Pt                              # update error covariance
-
-    #     if self.append_ones_y:
-    #         yhat = yhat[:, :-1]
-    #     return yhat
-
-    def predict_numpy(self, x):
+    def predict_numpy(self, x, start_y = None):
         """
         Runs a forward pass, returning a prediction for all input datapoints. If start_y is true, initial state is added.
 
         Parameters:
             input (ndarray) size [n, m], where n is the number of samples/data, and m is the number of observation features
+            start_y (array, optional) which specifies an initial [1, m] state.
         
         Returns:
             yhat (ndarray) prediction of size [n, k], where n is the number of samples/data, and k is the number of hidden state features
@@ -198,8 +176,8 @@ class KalmanFilter(decoder):
         self.Q = self.Q.numpy()
 
         yhat = np.zeros((x.shape[0], self.A.shape[1]))
-        if self.start_y:
-            yhat[0, :] = self.start_y
+        if start_y:
+            yhat[0, :] = start_y
 
         Pt = self.W.copy()
 
